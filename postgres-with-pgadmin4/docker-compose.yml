@@ -6,12 +6,14 @@ services:
     ports:
       - "${POSTGRES_DB:-5432}:5432"
     network_mode: bridge
-    container_name: postgres-container
+    container_name: postgres
     environment:
       POSTGRES_USER: "${POSTGRES_USER:-postgres}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
       POSTGRES_DB: "${POSTGRES_DB:-postgres}"
-  
+    volumes:
+       - postgre-data:/var/lib/postgresql/data
+
   pgadmin:
     image: dpage/pgadmin4
     ports:
@@ -20,8 +22,11 @@ services:
     depends_on: 
       - postgres
     external_links:
-      - postgres-container:postgres
+      - postgres:postgres
     environment:
       PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL:-admin@example.com}"
       PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_PASSWORD:-admin}"
 
+volumes:
+  postgre-data:
+    external: true
